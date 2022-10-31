@@ -3,7 +3,7 @@ const inquirer = require('inquirer')
 const db = require('../db/connection');
 const sqlQueries  = require('./sqlQueries')
 const {sqlViewAllEmployees, sqlViewAllRoles, sqlViewAllDepartments, sqlGetEmployeeId, sqlGetRoleId, sqlInsertEmployee, sqlGetDepId, sqlInsertRole, sqlUpdateRole, sqlInsertDepartment } = sqlQueries
-
+//Exit application
 function wantToExit () {
     inquirer
     .prompt([
@@ -18,7 +18,7 @@ function wantToExit () {
       promptRequest()
     });
 }
-
+//General function to execute queries
 function queryDatabase(write, sql, params) {
     return new Promise((resolve, reject) => {
         db.query(sql, params, (err, res) => {
@@ -31,12 +31,12 @@ function queryDatabase(write, sql, params) {
     })
     
 }
-
+//allows query to finish executing before calling beginning prompt
 async function processQuery (write, sql, params) {
     const result = await queryDatabase(write, sql, params);
     promptRequest();
 }
-
+//gets role id usingrole title
 async function getRoleID(employeeRole) {
     let roleId
     if(employeeRole === 'None') {
@@ -48,7 +48,7 @@ async function getRoleID(employeeRole) {
     }
     return roleId
 }
-
+//gets department id using department name
 async function getDepartmentID(departmentName) {
     let depId
     if(departmentName === 'None') {
@@ -60,7 +60,7 @@ async function getDepartmentID(departmentName) {
     }
     return depId
 }
-
+//gets employee id using employee full name
 async function getEmployeeID(employeeName) {
     let managerId
     if(employeeName === 'None') {
@@ -73,7 +73,7 @@ async function getEmployeeID(employeeName) {
     }
     return managerId
 }
-
+//triggers the process to add a role and gets role list
 async function ProcessRoleAdd() {
     const department = await queryDatabase(false, sqlViewAllDepartments)
     let choiceArr1 = []
@@ -82,13 +82,13 @@ async function ProcessRoleAdd() {
     }
     promptAddRole(choiceArr1)
 }
-
+//inserts role into db
 async function insertRole(roleData) {
     const department_id = await getDepartmentID(roleData.department)
     const params = [roleData.title, roleData.salary, department_id]
     processQuery(false, sqlInsertRole,params)
 }
-
+//prompts for adding a role
 function promptAddRole(choiceArr1) {
     inquirer.prompt([
         {
@@ -113,7 +113,7 @@ function promptAddRole(choiceArr1) {
         insertRole(response)
     })
 }
-
+//triggers the process to add new employee
 async function processEmployeeAdd() {
     const roles = await queryDatabase(false, sqlViewAllRoles)
     let choiceArr1 = []
@@ -127,14 +127,14 @@ async function processEmployeeAdd() {
     }
     promptAddEmployee(choiceArr1, choiceArr2)  
 }
-
+//inserts employee into db
 async function insertEmployee(employeeData) {
     const role_id = await getRoleID(employeeData.role)
     const employee_id = await getEmployeeID(employeeData.manager)
     const params = [employeeData.firstname, employeeData.lastname, role_id, employee_id]
     processQuery(false, sqlInsertEmployee,params)
 }
-
+//prompts for adding an employee
 function promptAddEmployee(choiceArr1, choiceArr2) {
     inquirer.prompt([
         {
@@ -164,7 +164,7 @@ function promptAddEmployee(choiceArr1, choiceArr2) {
         insertEmployee(response)
     })
 }
-
+//triggers process to update employees role
 async function processUpdateEmployeeRole() {
     const roles = await queryDatabase(false, sqlViewAllRoles)
     let choiceArr2 = []
@@ -178,13 +178,14 @@ async function processUpdateEmployeeRole() {
     }
     promptUpdateEmployeeRole(choiceArr1, choiceArr2)  
 }
+//updates employees role in db
 async function updateEmployeeRole(employeeData) {
     const role_id = await getRoleID(employeeData.role)
     const employee_id = await getEmployeeID(employeeData.employee)
     const params = [role_id, employee_id]
     processQuery(false, sqlUpdateRole,params)
 }
-
+//prompts to update employees role
 function promptUpdateEmployeeRole(choiceArr1,choiceArr2) {
     inquirer.prompt([
         {
@@ -204,8 +205,7 @@ function promptUpdateEmployeeRole(choiceArr1,choiceArr2) {
         updateEmployeeRole(response)
     })
 }
-
-
+//triggers process to add a department
 function processDepartmentAdd() {
     inquirer.prompt([
         {
@@ -219,7 +219,7 @@ function processDepartmentAdd() {
     })
 }
 
-
+//beginning prompts to select all available actions
 function promptRequest() {
     inquirer.prompt([
         {

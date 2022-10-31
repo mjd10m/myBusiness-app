@@ -1,3 +1,4 @@
+//all queries used to interact with db
 const sqlQueries = {
     sqlViewAllEmployees : 
     `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS department, role.salary, CONCAT(e.first_name, ' ' ,e.last_name) AS manager
