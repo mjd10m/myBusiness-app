@@ -15,7 +15,31 @@ const sqlQueries = {
     ON department.id = role.department_id;`,
     sqlViewAllDepartments :
     `SELECT department.name, department.id
-    FROM department;`
+    FROM department;`,
+    sqlGetEmployeeId : 
+    `SELECT id 
+     FROM employee
+     WHERE first_name = ?
+     AND last_name = ?;`,
+    sqlInsertEmployee : 
+    `INSERT INTO employee (first_name, last_name, role_id, manager_id) 
+     VALUES (?,?,?,?);`,
+    sqlGetRoleId : 
+    `SELECT id 
+     FROM role
+     WHERE title = ?;`,
+    sqlGetDepId : 
+    `SELECT id 
+     FROM department
+     WHERE name = ?;`,
+    sqlInsertRole : 
+    `INSERT INTO role (title, salary, department_id) 
+     VALUES (?,?,?);`,
+    sqlUpdateRole :
+    `UPDATE employee SET role_id = ? WHERE id = ?;`,
+    sqlInsertDepartment : 
+    `INSERT INTO department (name) 
+     VALUES (?);`,
 }
 
 module.exports = sqlQueries
